@@ -116,15 +116,19 @@ def webhook_handler():
 
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
-        print(machine.state)
+        # user state, use postback to change states
         if machine.state == "user" and event.type == "postback":
             machine.advance(event)
+        # setting_area state, provide three area 
         elif machine.state == "setting_area":
+            # check is the input invalid 
             if not event.message.text in ["北區", "中區", "南區"]:
                 send_text_message(event.reply_token, "請輸入正確的區域")
                 continue
             machine.go_to_city(event)
+        # setting city,  provide several city for each area
         elif machine.state == "setting_city":
+            # check is the input invalid for each area
             if machine.area == "北區":
                 if not event.message.text in ["台北市", "新北市", "桃園市", "新竹市"]:
                     send_text_message(event.reply_token, "請輸入正確的城市")

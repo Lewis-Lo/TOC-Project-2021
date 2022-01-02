@@ -20,6 +20,9 @@ def send_text_message(reply_token, text):
     return "OK"
 
 def get_weather_data_temperature(location):
+    # set the target url according to the city
+    # https://opendata.cwb.gov.tw/dist/opendata-swagger.html#/
+    # Authorization: CWB-715EF7DE-990A-497E-9908-AA23A028213D
     if location == "台北市":
         displayLocation = "Taipei City"
         url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-063"
@@ -48,15 +51,16 @@ def get_weather_data_temperature(location):
         displayLocation = "Kaohsiung City"
         url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-067"
         locationName = "苓雅區"
-
     params = {
         "Authorization": "CWB-715EF7DE-990A-497E-9908-AA23A028213D",
         "elementName": ["MinT", "MaxT"],
         "locationName": locationName
     }
+
+    # parse the data
     response = requests.get(url, params=params)
-    # print("------------------------")
     data = json.loads(response.text)
+
     MinTemperature = []
     MaxTemperature = []
     time = []
@@ -69,17 +73,14 @@ def get_weather_data_temperature(location):
             index = index + 1
             MinTemperature.append(int(element["elementValue"][0]["value"]))
             time.append(element["startTime"][5:10])
-
     time = []
     for element in data["records"]["locations"][0]["location"][0]["weatherElement"][1]["time"]:
         if not element["startTime"][5:10] in time :
             MaxTemperature.append(int(element["elementValue"][0]["value"]))
             time.append(element["startTime"][5:10])
-    # print("------------------------")
 
-    # print(MinTemperature)
-    # print(MaxTemperature)
 
+    # draw and save the chart
     plt.figure(figsize=(12,8), dpi=80)
     
     model=make_interp_spline(x, MaxTemperature)
@@ -104,6 +105,9 @@ def get_weather_data_temperature(location):
     return 
 
 def get_weather_discription(location):
+    # set the target url according to the city
+    # https://opendata.cwb.gov.tw/dist/opendata-swagger.html#/
+    # Authorization: CWB-715EF7DE-990A-497E-9908-AA23A028213D
     if location == "台北市":
         displayLocation = "Taipei City"
         url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-061"
@@ -132,15 +136,17 @@ def get_weather_discription(location):
         displayLocation = "Kaohsiung City"
         url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-065"
         locationName = "苓雅區"
-
     params = {
         "Authorization": "CWB-715EF7DE-990A-497E-9908-AA23A028213D",
         "elementName": ["WeatherDescription", "PoP6h"],
         "locationName": locationName
     }
+
+    # parse the data
     response = requests.get(url, params=params)
     data = json.loads(response.text)
     
+    # draw the chart and get description
     description = location + "6小時內天氣概況如下:\n\n"
     description += data["records"]["locations"][0]["location"][0]["weatherElement"][0]["time"][0]["elementValue"][0]["value"]
 
@@ -152,8 +158,6 @@ def get_weather_discription(location):
         PoPs.append(element["elementValue"][0]["value"])
         times.append(element["startTime"][5:10] + ' ' + element["startTime"][11:16])
 
-    # print(PoPs)
-    # print(times)
 
     PoP_img = matplotlib.image.imread("assets/PoP.png")
     fig, ax = plt.subplots(figsize=(7,3), dpi=80)
@@ -172,6 +176,9 @@ def get_weather_discription(location):
     return description
 
 def get_air_condition(location):
+    # set the target url according to the city
+    # https://data.gov.tw/dataset/40448
+    # api_key: "81d875e6-6d74-4c4d-90a0-40b4f68e4fdd"
     api_key = "81d875e6-6d74-4c4d-90a0-40b4f68e4fdd"
     if location == "台北市":
         County = "臺北市"
@@ -208,11 +215,9 @@ def get_air_condition(location):
         SiteName = ["左營", "前鎮", "小港", "楠梓", "鳳山"]
         url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=1&api_key=" + api_key + "&filters=SiteName,EQ,左營&County,EQ,高雄市"
 
+    # parse the data
     response = requests.get(url)
     data = json.loads(response.text)
-
-    # print(url)
-    # print(data["records"])
 
     if len(data["records"]) <= 0:
         print("------------------")
@@ -222,10 +227,6 @@ def get_air_condition(location):
         return "伺服器異常 請稍候再試"
 
     data = data["records"][0]
-    # print("------------------")
-    # print(data)
-    # print("------------------")
-
 
     descriptions = data["County"] + " " + data["SiteName"] + "測站\n" 
     descriptions += "時間: " + data["PublishTime"] + "\n"

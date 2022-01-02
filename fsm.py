@@ -14,8 +14,9 @@ class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
         self.machine = GraphMachine(model=self, **machine_configs)
 
-        self.city = "台南市"
+        # default setting
         self.area = "南區"
+        self.city = "台南市"
 
     def is_going_to_setting(self, event):
         return "setting" in event.postback.data
@@ -32,6 +33,8 @@ class TocMachine(GraphMachine):
     ########## setting-area #########
 
     def on_enter_setting_area(self, event):
+        # send a button message to the user, then the user can choose a area 
+
         text = "目前查詢地點: " + self.city
         text += "\n請選擇想查詢的區域"
 
@@ -55,7 +58,6 @@ class TocMachine(GraphMachine):
         reply_token = event.reply_token
         send_button_message(reply_token, text, buttons, title, url)
 
-
     def on_exit_setting_area(self, event):
         pass
 
@@ -63,8 +65,10 @@ class TocMachine(GraphMachine):
     ########## setting-city #########
 
     def on_enter_setting_city(self, event):
-        self.area = event.message.text
+        # send a button message to the user according the area choosed, 
+        # then the user can choose a city in that area 
 
+        self.area = event.message.text
 
         text = "目前查詢地點: " + self.city
         text += "\n請選擇想查詢的城市"
@@ -120,6 +124,8 @@ class TocMachine(GraphMachine):
     ########## change-city #########
     
     def on_enter_change_city(self, event):
+        # change the city
+
         self.city = event.message.text
         reply_token = event.reply_token
         send_text_message(reply_token, "成功設置查詢地點: " + self.city)
@@ -132,55 +138,54 @@ class TocMachine(GraphMachine):
     ########## temperature #########
 
     def on_enter_temperature(self, event):
-        
+        # draw the temperature chart
         get_weather_data_temperature(self.city)
 
+        # upload the chart to imgur platform
         im = pyimgur.Imgur("e68af9d49ba23bb")
         upload_image = im.upload_image("temperature.png", title="TOC_FSM_temperature")
-        print("----------")
-        print(upload_image.link)
-        print("----------")
 
+        # send the image message to the user
         reply_token = event.reply_token
-        # send_text_message(reply_token, upload_image.link)
         send_image_url(reply_token, upload_image.link, self.city + "一周氣溫圖:")
         self.go_back()
 
     def on_exit_temperature(self):
-        print("Leaving temperature")
+        pass
 
 
     ########## raining #########
 
     def on_enter_raining(self, event):
-
+        # get the weather discription and draw the PoP chart
         description = get_weather_discription(self.city)
         reply_token = event.reply_token
 
+        # upload the chart to imgur platform
         im = pyimgur.Imgur("e68af9d49ba23bb")
         upload_image = im.upload_image("raining.png", title="TOC_FSM_raining")
-        print("----------")
-        print(upload_image.link)
-        print("----------")
 
+        # send the image message to the user
         reply_token = event.reply_token
         send_image_url(reply_token, upload_image.link, description + "\n\n降雨機率表:")
 
         self.go_back()
 
     def on_exit_raining(self):
-        print("Leaving raining")
+        pass
 
 
     ########## air #########
 
     def on_enter_air(self, event):
+        # get the air condition discription
         description = get_air_condition(self.city)
 
+        # send the discription to the user
         reply_token = event.reply_token
         send_text_message(reply_token, description)
         self.go_back()
 
     def on_exit_air(self):
-        print("Leaving air")
+        pass
 
