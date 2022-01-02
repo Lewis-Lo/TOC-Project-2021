@@ -10,7 +10,7 @@
 
 #### 設定城市
 左上為設定，按下後進入設定模式，可以選擇想要查詢的地區和城市
-![](https://i.imgur.com/Tn8MJfT.png =500x)
+![](https://i.imgur.com/Tn8MJfT.png)
 選擇想要查詢的區域
 ![](https://i.imgur.com/VnDeCX8.png)
 
