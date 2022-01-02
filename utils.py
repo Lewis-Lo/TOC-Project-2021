@@ -2,6 +2,8 @@ import os
 import requests
 import json
 
+import matplotlib
+matplotlib.use('Agg')
 from linebot import LineBotApi, WebhookParser
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage, TemplateSendMessage, ButtonsTemplate
 import matplotlib.pyplot as plt 
@@ -84,18 +86,18 @@ def get_weather_data_temperature(location):
     plt.figure(figsize=(12,8), dpi=80)
     
     model=make_interp_spline(x, MaxTemperature)
-    xs=np.linspace(1,7,500)
+    xs=np.linspace(1,len(time),500)
     ys=model(xs)
     plt.plot(xs, ys, color = "#E9736D", linestyle = "--", linewidth = 4.5, label = "Max Temp")
 
     model=make_interp_spline(x, MinTemperature)
-    xs=np.linspace(1,7,500)
+    xs=np.linspace(1,len(time),500)
     ys=model(xs)
     plt.plot(xs, ys, color = "#5380EA", linestyle = "--", linewidth = 4.5, label = "Min Temp")
 
     plt.title(displayLocation + ", weekly weather forecast, start time :" + startTime, fontsize = 16, color = "#575757")
     plt.ylim((min(MinTemperature) - 3, max(MaxTemperature) + 3))
-    plt.xticks([1,2,3,4,5,6,7], time)
+    plt.xticks(list(range(1,len(time)+1)), time)
     plt.grid()
     plt.legend()
     plt.xlabel("Date", fontsize = 16, color = "#575757")
@@ -183,37 +185,37 @@ def get_air_condition(location):
     if location == "台北市":
         County = "臺北市"
         SiteName = ["松山", "士林", "中山", "萬華", "大同"]
-        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=1&api_key=" + api_key + "&filters=SiteName,EQ,士林&County,EQ,臺北市"
+        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=5&api_key=" + api_key + "&filters=SiteName,EQ,士林&County,EQ,臺北市"
 
     if location == "新北市":
         County = "新北市"
         SiteName = ["板橋", "汐止", "新店", "新莊", "淡水"]
-        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=1&api_key=" + api_key + "&filters=SiteName,EQ,汐止&County,EQ,新北市"
+        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=5&api_key=" + api_key + "&filters=SiteName,EQ,汐止&County,EQ,新北市"
 
     if location == "桃園市":
         County = "桃園市"
         SiteName = ["桃園", "大園", "觀音", "平鎮", "龍潭"]
-        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=1&api_key=" + api_key + "&filters=SiteName,EQ,桃園&County,EQ,桃園市"
+        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=5&api_key=" + api_key + "&filters=SiteName,EQ,桃園&County,EQ,桃園市"
 
     if location == "新竹市":
         County = "新竹市"
         SiteName = ["新竹", "竹東", "湖口"]
-        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=1&api_key=" + api_key + "&filters=SiteName,EQ,竹東&County,EQ,新竹縣"
+        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=5&api_key=" + api_key + "&filters=SiteName,EQ,竹東&County,EQ,新竹縣"
 
     if location == "台中市":
         County = "臺中市"
         SiteName = ["豐原", "沙鹿", "大里", "忠明", "西屯"]
-        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=1&api_key=" + api_key + "&filters=SiteName,EQ,豐原&County,EQ,臺中市"
+        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=5&api_key=" + api_key + "&filters=SiteName,EQ,豐原&County,EQ,臺中市"
 
     if location == "台南市":
         County = "臺南市"
         SiteName = ["新營", "善化", "安南", "台南"]
-        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=1&api_key=" + api_key + "&filters=SiteName,EQ,臺南&County,EQ,臺南市"
+        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=5&api_key=" + api_key + "&filters=SiteName,EQ,臺南&County,EQ,臺南市"
 
     if location == "高雄市":
         County = "高雄市"
         SiteName = ["左營", "前鎮", "小港", "楠梓", "鳳山"]
-        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=1&api_key=" + api_key + "&filters=SiteName,EQ,左營&County,EQ,高雄市"
+        url = "https://data.epa.gov.tw/api/v1/aqx_p_432?format=json&limit=5&api_key=" + api_key + "&filters=SiteName,EQ,左營&County,EQ,高雄市"
 
     # parse the data
     response = requests.get(url)
@@ -234,7 +236,7 @@ def get_air_condition(location):
     descriptions += "空氣品質: \" " + data["Status"] + " \"\n"
     descriptions += "AQI指數:" + data["AQI"] + "\n"
     descriptions += "PM2.5: " + data["PM2.5"] + "(ug/m3)\n"
-    descriptions += "PM10: " + data["PM10"] + "(ug/m3)\n"
+    descriptions += "PM10: " + data["PM10"] + "(ug/m3)"
 
     return descriptions
 

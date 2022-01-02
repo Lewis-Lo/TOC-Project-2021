@@ -122,22 +122,22 @@ def webhook_handler():
         # setting_area state, provide three area 
         elif machine.state == "setting_area":
             # check is the input invalid 
-            if not event.message.text in ["北區", "中區", "南區"]:
+            if not event.message.text in ["北部", "中部", "南部"]:
                 send_text_message(event.reply_token, "請輸入正確的區域")
                 continue
             machine.go_to_city(event)
         # setting city,  provide several city for each area
         elif machine.state == "setting_city":
             # check is the input invalid for each area
-            if machine.area == "北區":
+            if machine.area == "北部":
                 if not event.message.text in ["台北市", "新北市", "桃園市", "新竹市"]:
                     send_text_message(event.reply_token, "請輸入正確的城市")
                     continue
-            if machine.area == "中區":
+            if machine.area == "中部":
                 if not event.message.text in ["台中市"]:
                     send_text_message(event.reply_token, "請輸入正確的城市")
                     continue
-            if machine.area == "南區":
+            if machine.area == "南部":
                 if not event.message.text in ["台南市", "高雄市"]:
                     send_text_message(event.reply_token, "請輸入正確的城市")
                     continue

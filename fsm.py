@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib.pyplot import eventplot
 from transitions.extensions import GraphMachine
 
@@ -15,7 +17,7 @@ class TocMachine(GraphMachine):
         self.machine = GraphMachine(model=self, **machine_configs)
 
         # default setting
-        self.area = "南區"
+        self.area = "南部"
         self.city = "台南市"
 
     def is_going_to_setting(self, event):
@@ -41,16 +43,16 @@ class TocMachine(GraphMachine):
         title = "Weather Bot"
         buttons = [
             MessageTemplateAction(
-                label = "北區",
-                text = "北區"
+                label = "北部",
+                text = "北部"
             ),
             MessageTemplateAction(
-                label = "中區",
-                text = "中區"
+                label = "中部",
+                text = "中部"
             ),
             MessageTemplateAction(
-                label = "南區",
-                text = "南區"
+                label = "南部",
+                text = "南部"
             ),
         ]
         url = "https://i.imgur.com/BdOJmjV.png"
@@ -74,7 +76,7 @@ class TocMachine(GraphMachine):
         text += "\n請選擇想查詢的城市"
 
         title = "Weather Bot"
-        if self.area == "北區":
+        if self.area == "北部":
             buttons = [
                 MessageTemplateAction(
                     label = "台北市",
@@ -93,14 +95,14 @@ class TocMachine(GraphMachine):
                     text = "新竹市"
                 ),
             ]
-        elif self.area == "中區":
+        elif self.area == "中部":
             buttons = [
                 MessageTemplateAction(
                     label = "台中市",
                     text = "台中市"
                 ),
             ]
-        elif self.area == "南區":
+        elif self.area == "南部":
             buttons = [
                 MessageTemplateAction(
                     label = "台南市",
