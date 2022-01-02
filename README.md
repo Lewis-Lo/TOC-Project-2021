@@ -6,30 +6,30 @@
 
 ## 功能
 ### 主選單
-![](https://i.imgur.com/MrVC5Ur.png =500x)
+![](https://i.imgur.com/MrVC5Ur.png)
 
 #### 設定城市
 左上為設定，按下後進入設定模式，可以選擇想要查詢的地區和城市
 ![](https://i.imgur.com/Tn8MJfT.png =500x)
 選擇想要查詢的區域
-![](https://i.imgur.com/VnDeCX8.png =500x)
+![](https://i.imgur.com/VnDeCX8.png)
 
 
 #### 氣溫查詢
 右上為氣溫查詢 可查詢最近一周每日的最高溫和最低溫
-![](https://i.imgur.com/cPfIkWt.png =500x)
+![](https://i.imgur.com/cPfIkWt.png)
 ![](https://i.imgur.com/wnozPi9.png)
 
 
 #### 降雨機率查詢
 左下為降雨機率查詢 可查詢兩天內降雨機率以及現在的天氣概況
-![](https://i.imgur.com/9X4s4oj.png =500x)
+![](https://i.imgur.com/9X4s4oj.png)
 ![](https://i.imgur.com/sKen1in.png)
 
 
 #### 空氣品質查詢
 右下為空氣品質查詢 可以查到當前空氣狀況
-![](https://i.imgur.com/NvedJzK.png =500x)
+![](https://i.imgur.com/NvedJzK.png)
 其中AQI指數為空氣品質指數
 0-50:良好
 51-100:普通
