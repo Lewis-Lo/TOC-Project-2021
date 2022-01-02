@@ -14,21 +14,43 @@ load_dotenv()
 
 
 machine = TocMachine(
-    states=["user", "state1", "state2"],
+    states=["user", "setting_area", "setting_city", "change_city", "temperature", "raining", "air"],
     transitions=[
         {
             "trigger": "advance",
             "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
+            "dest": "setting_area",
+            "conditions": "is_going_to_setting",
+        },
+        {
+            "trigger": "go_to_city",
+            "source": "setting_area",
+            "dest": "setting_city",
+        },
+        {
+            "trigger": "go_to_change_city",
+            "source": "setting_city",
+            "dest": "change_city",
         },
         {
             "trigger": "advance",
             "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
+            "dest": "temperature",
+            "conditions": "is_going_to_temperature",
         },
-        {"trigger": "go_back", "source": ["state1", "state2"], "dest": "user"},
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "raining",
+            "conditions": "is_going_to_raining",
+        },
+        {
+            "trigger": "advance",
+            "source": "user",
+            "dest": "air",
+            "conditions": "is_going_to_air",
+        },
+        {"trigger": "go_back", "source": ["setting", "setting_area", "change_city", "setting_city", "temperature", "raining", "air"], "dest": "user"},
     ],
     initial="user",
     auto_transitions=False,
@@ -94,17 +116,28 @@ def webhook_handler():
 
     # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
-        if not isinstance(event, MessageEvent):
-            continue
-        if not isinstance(event.message, TextMessage):
-            continue
-        if not isinstance(event.message.text, str):
-            continue
-        print(f"\nFSM STATE: {machine.state}")
-        print(f"REQUEST BODY: \n{body}")
-        response = machine.advance(event)
-        if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
+        print(machine.state)
+        if machine.state == "user" and event.type == "postback":
+            machine.advance(event)
+        elif machine.state == "setting_area":
+            if not event.message.text in ["北區", "中區", "南區"]:
+                send_text_message(event.reply_token, "請輸入正確的區域")
+                continue
+            machine.go_to_city(event)
+        elif machine.state == "setting_city":
+            if machine.area == "北區":
+                if not event.message.text in ["台北市", "新北市", "桃園市", "新竹市"]:
+                    send_text_message(event.reply_token, "請輸入正確的城市")
+                    continue
+            if machine.area == "中區":
+                if not event.message.text in ["台中市"]:
+                    send_text_message(event.reply_token, "請輸入正確的城市")
+                    continue
+            if machine.area == "南區":
+                if not event.message.text in ["台南市", "高雄市"]:
+                    send_text_message(event.reply_token, "請輸入正確的城市")
+                    continue
+            machine.go_to_change_city(event)
 
     return "OK"
 
