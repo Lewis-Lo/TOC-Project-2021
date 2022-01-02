@@ -50,7 +50,7 @@ machine = TocMachine(
             "dest": "air",
             "conditions": "is_going_to_air",
         },
-        {"trigger": "go_back", "source": ["setting", "setting_area", "change_city", "setting_city", "temperature", "raining", "air"], "dest": "user"},
+        {"trigger": "go_back", "source": ["change_city", "temperature", "raining", "air"], "dest": "user"},
     ],
     initial="user",
     auto_transitions=False,
